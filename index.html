@@ -1,0 +1,274 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>五格故事圖卡</title>
+
+<style>
+
+body{
+    margin:0;
+    padding:0;
+    background:#111;
+    color:white;
+    font-family:Arial, sans-serif;
+    overflow-x:hidden;
+}
+
+h1{
+    text-align:center;
+    padding:30px 0 10px;
+    font-size:32px;
+}
+
+.description{
+    text-align:center;
+    color:#bbb;
+    margin-bottom:20px;
+}
+
+.card-area{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+    padding:30px;
+    box-sizing:border-box;
+}
+
+.card{
+    width:240px;
+    aspect-ratio:16/9;
+    perspective:1000px;
+    cursor:pointer;
+}
+
+.card-inner{
+    width:100%;
+    height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:0.8s;
+}
+
+.card.flipped .card-inner{
+    transform:rotateY(180deg);
+}
+
+.card-front,
+.card-back{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:16px;
+    overflow:hidden;
+    backface-visibility:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,0.5);
+}
+
+.card-front{
+    background:#222;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:42px;
+    font-weight:bold;
+}
+
+.card-back{
+    transform:rotateY(180deg);
+    background:black;
+}
+
+.card-back img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.button-area{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+button{
+    padding:12px 30px;
+    border:none;
+    border-radius:10px;
+    background:white;
+    color:black;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.gallery{
+    display:none;
+    width:100%;
+    padding:20px;
+    box-sizing:border-box;
+}
+
+.gallery.active{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.gallery img{
+    width:100%;
+    border-radius:12px;
+    aspect-ratio:16/9;
+    object-fit:cover;
+    box-shadow:0 5px 15px rgba(0,0,0,0.5);
+}
+
+footer{
+    text-align:center;
+    padding:40px 20px;
+    color:#777;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>五格故事圖卡</h1>
+
+<div class="description">
+點擊卡片翻面抽取故事圖卡
+</div>
+
+<div class="card-area" id="cardArea"></div>
+
+<div class="button-area">
+    <button id="randomBtn">重新抽卡</button>
+    <button id="toggleGallery">查看全部圖庫</button>
+</div>
+
+<div class="gallery" id="gallery"></div>
+
+<footer>
+Story Card Generator
+</footer>
+
+<script>
+
+const totalImages = 36;
+const drawCount = 5;
+
+const cardArea = document.getElementById('cardArea');
+const gallery = document.getElementById('gallery');
+
+function pad(num){
+    return num.toString().padStart(2,'0');
+}
+
+function createGallery(){
+
+    for(let i=1;i<=totalImages;i++){
+
+        const img = document.createElement('img');
+
+        img.src = `images/${pad(i)}.jpg`;
+
+        gallery.appendChild(img);
+    }
+}
+
+function getRandomImages(){
+
+    const numbers = [];
+
+    while(numbers.length < drawCount){
+
+        const random = Math.floor(Math.random() * totalImages) + 1;
+
+        if(!numbers.includes(random)){
+            numbers.push(random);
+        }
+    }
+
+    return numbers;
+}
+
+function createCards(){
+
+    cardArea.innerHTML = '';
+
+    const selected = getRandomImages();
+
+    selected.forEach(num=>{
+
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        card.innerHTML = `
+            <div class="card-inner">
+
+                <div class="card-front">
+                    ?
+                </div>
+
+                <div class="card-back">
+                    <img src="images/${pad(num)}.jpg">
+                </div>
+
+            </div>
+        `;
+
+        card.addEventListener('click',()=>{
+
+            card.classList.toggle('flipped');
+
+        });
+
+        cardArea.appendChild(card);
+
+    });
+
+}
+
+createCards();
+createGallery();
+
+document.getElementById('randomBtn').addEventListener('click',()=>{
+
+    createCards();
+
+});
+
+document.getElementById('toggleGallery').addEventListener('click',()=>{
+
+    gallery.classList.toggle('active');
+
+    if(gallery.classList.contains('active')){
+
+        document.getElementById('toggleGallery').innerText = '隱藏圖庫';
+
+    }else{
+
+        document.getElementById('toggleGallery').innerText = '查看全部圖庫';
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
+```
