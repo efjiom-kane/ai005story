@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="zh-Hant">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,70 +13,76 @@
 
 <body>
 
-  <header class="top-header">
-    <h1>圖卡說故事創意發揮</h1>
+  <!-- 首頁 -->
+
+  <div id="homePage">
 
 ```
-<p>
-  隨機抽取五張圖卡，自由排列順序，創造你的故事。
-</p>
+<header>
+  <h1>圖卡說故事創意發揮</h1>
+
+  <p>
+    隨機抽取五張圖卡，排列順序後創作故事。
+  </p>
+</header>
+
+<!-- 功能按鈕 -->
+<div class="top-buttons">
+
+  <button onclick="drawCards()">
+    重新抽卡
+  </button>
+
+  <button onclick="showGallery()">
+    所有圖庫
+  </button>
+
+</div>
+
+<!-- 五張圖卡 -->
+<div id="cardsWrapper" class="cards-wrapper"></div>
+
+<!-- 故事輸入區 -->
+<div class="story-section">
+
+  <h2>故事創作區</h2>
+
+  <textarea
+    placeholder="依照圖卡順序輸入你的故事..."
+  ></textarea>
+
+</div>
 ```
-
-  </header>
-
-  <main class="container">
-
-```
-<!-- 首頁 -->
-<section id="homePage">
-
-  <div class="top-buttons">
-    <button onclick="drawCards()">
-      重新抽卡
-    </button>
-
-    <button onclick="showGallery()">
-      所有圖庫
-    </button>
-  </div>
-
-  <!-- 五張卡片 -->
-  <div id="cardsWrapper" class="cards-wrapper"></div>
-
-  <!-- 文字故事區 -->
-  <section class="story-section">
-
-    <h2>故事創作區</h2>
-
-    <textarea
-      placeholder="請依照圖卡順序，輸入你的故事..."
-    ></textarea>
-
-  </section>
-
-</section>
-
-<!-- 圖庫頁 -->
-<section id="galleryPage" style="display:none;">
-
-  <div class="top-buttons">
-
-    <button onclick="backHome()">
-      返回首頁
-    </button>
 
   </div>
 
-  <div id="galleryGrid" class="gallery-grid"></div>
+  <!-- 圖庫頁 -->
 
-</section>
+  <div id="galleryPage" style="display:none;">
+
+```
+<header>
+  <h1>所有圖庫</h1>
+</header>
+
+<div class="top-buttons">
+
+  <button onclick="backHome()">
+    返回首頁
+  </button>
+
+</div>
+
+<!-- 全部圖片 -->
+<div id="galleryGrid" class="gallery-grid"></div>
 ```
 
-  </main>
+  </div>
 
   <!-- 載入 script -->
 
   <script src="script.js"></script>
 
 </body>
+
 </html>
