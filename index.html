@@ -1,361 +1,509 @@
 <!DOCTYPE html>
+
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI分鏡創意故事</title>
-    <style>
-        :root {
-            --primary-color: #363f60;
-            --secondary-color: #868887;
-            --bg-color: #f4f6f8;
-        }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+```
+<title>AI分鏡創意故事</title>
 
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
+<style>
+    :root {
+        --primary-color: #363f60;
+        --secondary-color: #868887;
+        --bg-color: #f4f6f8;
+    }
 
-        .controls {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 15px;
-        }
+    * {
+        box-sizing: border-box;
+    }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: var(--primary-color);
-            color: white;
-            transition: background-color 0.3s;
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color);
+        color: #333;
+        margin: 0;
+        padding: 20px;
+    }
 
-        button:hover {
-            background-color: #2a314b;
-        }
+    h1 {
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
 
-        button.secondary {
-            background-color: var(--secondary-color);
-        }
+    p {
+        margin-top: 0;
+    }
 
-        button.secondary:hover {
-            background-color: #6d6e6e;
-        }
+    /* 按鈕區 */
+    .controls {
+        margin: 25px 0;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
-        /* 主視圖：分鏡區域 */
-        #main-view {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 8px;
+        background-color: var(--primary-color);
+        color: white;
+        transition: 0.3s;
+    }
 
+    button:hover {
+        background-color: #2a314b;
+    }
+
+    .secondary {
+        background-color: var(--secondary-color);
+    }
+
+    .secondary:hover {
+        background-color: #6d6e6e;
+    }
+
+    /* 主畫面 */
+    #main-view {
+        width: 100%;
+        max-width: 1400px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* 五張卡片區 */
+    .storyboard {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    /* 卡片 */
+    .card-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s;
+        cursor: pointer;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .card.flipped {
+        transform: rotateY(180deg);
+    }
+
+    .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        backface-visibility: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* 背面 */
+    .card-back {
+        background: linear-gradient(135deg,
+            var(--primary-color),
+            var(--secondary-color));
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* 正面 */
+    .card-front {
+        transform: rotateY(180deg);
+        background: white;
+    }
+
+    .card-front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* 左右移動按鈕 */
+    .move-controls {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .move-btn {
+        width: 45px;
+        height: 40px;
+        border-radius: 8px;
+        border: none;
+        background: var(--primary-color);
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    .move-btn:hover {
+        background: #2a314b;
+    }
+
+    /* 文字區 */
+    textarea {
+        width: 100%;
+        max-width: 1000px;
+        min-height: 200px;
+        padding: 18px;
+        border-radius: 12px;
+        border: 2px solid #ddd;
+        font-size: 16px;
+        resize: vertical;
+    }
+
+    textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+    }
+
+    /* 圖庫頁 */
+    #gallery-view {
+        display: none;
+        width: 100%;
+        max-width: 1400px;
+        margin: auto;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .gallery-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 18px;
+        margin-top: 20px;
+    }
+
+    .gallery-item {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        display: block;
+    }
+
+    .image-label {
+        text-align: center;
+        padding: 8px;
+        font-size: 14px;
+        background: #eee;
+    }
+
+    /* 手機版 */
+    @media (max-width: 1200px) {
         .storyboard {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 30px;
-            width: 100%;
+            grid-template-columns: repeat(2, 1fr);
         }
+    }
 
-        /* 卡片設計 (16:9 比例) */
-        .card-container {
-            width: 220px;
-            aspect-ratio: 16 / 9;
-            perspective: 1000px;
-            cursor: pointer;
+    @media (max-width: 700px) {
+        .storyboard {
+            grid-template-columns: 1fr;
         }
+    }
+</style>
+```
 
-        .card {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 8px;
-        }
-
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-container.dragging {
-            opacity: 0.5;
-        }
-
-        .card-container.drag-over {
-            border: 2px dashed var(--primary-color);
-            transform: scale(1.05);
-        }
-
-        .card-face {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            backface-visibility: hidden;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-            overflow: hidden;
-        }
-
-        .card-back {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-        }
-
-        .card-front {
-            background-color: white;
-            transform: rotateY(180deg);
-        }
-
-        .card-front img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        textarea {
-            width: 100%;
-            max-width: 800px;
-            height: 150px;
-            padding: 15px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        /* 圖庫視圖 */
-        #gallery-view {
-            display: none;
-            width: 100%;
-            max-width: 1200px;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .gallery-item {
-            aspect-ratio: 16 / 9;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .image-label {
-            text-align: center;
-            font-size: 12px;
-            padding: 5px;
-            background: #eee;
-        }
-    </style>
 </head>
+
 <body>
 
-    <div id="main-view">
-        <h1>AI分鏡創意故事</h1>
-        
-        <div class="controls">
-            <button id="btn-draw">開始抽籤 (重置)</button>
-            <button id="btn-gallery" class="secondary">全部圖庫</button>
-        </div>
+```
+<!-- 主畫面 -->
+<div id="main-view">
 
-        <div class="storyboard" id="storyboard">
-        </div>
+    <h1>AI分鏡創意故事</h1>
 
-        <textarea placeholder="請根據上方的圖片順序，在這裡填寫您的創意故事..."></textarea>
+    <p>
+        抽出五張圖卡，自由調整順序後創作故事。
+    </p>
+
+    <!-- 按鈕 -->
+    <div class="controls">
+
+        <button id="btn-draw">
+            重新抽卡
+        </button>
+
+        <button id="btn-gallery" class="secondary">
+            所有圖庫
+        </button>
+
     </div>
 
-    <div id="gallery-view">
-        <h1>全部圖庫</h1>
-        <div class="controls">
-            <button id="btn-back">返回首頁</button>
-        </div>
-        <div class="gallery-grid" id="gallery-grid">
-        </div>
+    <!-- 五張圖卡 -->
+    <div class="storyboard" id="storyboard">
+
     </div>
 
-    <script>
-        // 設定區
-        const TOTAL_IMAGES = 36;
-        const CARD_COUNT = 5;
-        const IMAGE_EXT = '.jpg'; 
-        // 已經將資料夾名稱改為 ai005story
-        const IMAGE_FOLDER = 'ai005story/';
+    <!-- 文字輸入 -->
+    <textarea
+        placeholder="請依照圖片順序輸入你的故事..."
+    ></textarea>
 
-        // DOM 元素
-        const mainView = document.getElementById('main-view');
-        const galleryView = document.getElementById('gallery-view');
-        const storyboard = document.getElementById('storyboard');
-        const galleryGrid = document.getElementById('gallery-grid');
-        
-        const btnDraw = document.getElementById('btn-draw');
-        const btnGallery = document.getElementById('btn-gallery');
-        const btnBack = document.getElementById('btn-back');
+</div>
 
-        // 生成圖片路徑陣列
-        const imageList = [];
-        for (let i = 1; i <= TOTAL_IMAGES; i++) {
-            const numStr = i.toString().padStart(2, '0');
-            imageList.push(`${IMAGE_FOLDER}images_${numStr}${IMAGE_EXT}`);
-        }
+<!-- 圖庫頁 -->
+<div id="gallery-view">
 
-        // 初始化圖庫畫面
-        function initGallery() {
-            galleryGrid.innerHTML = '';
-            imageList.forEach((src, index) => {
-                const numStr = (index + 1).toString().padStart(2, '0');
-                const div = document.createElement('div');
-                div.className = 'gallery-item';
-                div.innerHTML = `
-                    <img src="${src}" alt="Image ${numStr}" loading="lazy">
-                    <div class="image-label">images_${numStr}</div>
-                `;
-                galleryGrid.appendChild(div);
-            });
-        }
+    <h1>全部圖庫</h1>
 
-        // 隨機抽取圖片
-        function drawRandomImages() {
-            const shuffled = [...imageList].sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, CARD_COUNT);
-        }
+    <div class="controls">
 
-        // 建立分鏡卡片
-        function initStoryboard() {
-            storyboard.innerHTML = '';
-            const selectedImages = drawRandomImages();
+        <button id="btn-back">
+            返回首頁
+        </button>
 
-            selectedImages.forEach((src, index) => {
-                const cardContainer = document.createElement('div');
-                cardContainer.className = 'card-container';
-                cardContainer.draggable = true; 
-                
-                cardContainer.innerHTML = `
-                    <div class="card">
-                        <div class="card-face card-back">點擊翻牌</div>
-                        <div class="card-face card-front">
-                            <img src="${src}" alt="Story Image">
-                        </div>
+    </div>
+
+    <!-- 圖庫 -->
+    <div class="gallery-grid" id="gallery-grid">
+
+    </div>
+
+</div>
+
+<script>
+
+    // 設定
+    const TOTAL_IMAGES = 36;
+    const CARD_COUNT = 5;
+
+    const IMAGE_EXT = '.jpg';
+
+    const IMAGE_FOLDER = 'images/';
+
+    // DOM
+    const storyboard = document.getElementById('storyboard');
+
+    const galleryGrid = document.getElementById('gallery-grid');
+
+    const mainView = document.getElementById('main-view');
+
+    const galleryView = document.getElementById('gallery-view');
+
+    const btnDraw = document.getElementById('btn-draw');
+
+    const btnGallery = document.getElementById('btn-gallery');
+
+    const btnBack = document.getElementById('btn-back');
+
+    // 圖片清單
+    const imageList = [];
+
+    for (let i = 1; i <= TOTAL_IMAGES; i++) {
+
+        const num = String(i).padStart(2, '0');
+
+        imageList.push(
+            `${IMAGE_FOLDER}images_${num}${IMAGE_EXT}`
+        );
+    }
+
+    // 隨機抽圖
+    function drawRandomImages() {
+
+        const shuffled =
+            [...imageList].sort(() => 0.5 - Math.random());
+
+        return shuffled.slice(0, CARD_COUNT);
+    }
+
+    // 建立五張圖卡
+    function initStoryboard() {
+
+        storyboard.innerHTML = '';
+
+        const selectedImages = drawRandomImages();
+
+        selectedImages.forEach((src) => {
+
+            const cardContainer =
+                document.createElement('div');
+
+            cardContainer.className = 'card-container';
+
+            cardContainer.innerHTML = `
+
+                <div class="card">
+
+                    <div class="card-face card-back">
+
+                        點擊翻牌
+
                     </div>
-                `;
 
-                // 點擊翻轉邏輯
-                cardContainer.addEventListener('click', function() {
-                    const card = this.querySelector('.card');
-                    if (!card.classList.contains('flipped')) {
-                        card.classList.add('flipped');
-                    }
-                });
+                    <div class="card-face card-front">
 
-                addDragAndDropHandlers(cardContainer);
-                storyboard.appendChild(cardContainer);
-            });
-        }
+                        <img src="${src}" alt="story">
 
-        // 拖曳重排邏輯
-        let draggedItem = null;
+                    </div>
 
-        function addDragAndDropHandlers(element) {
-            element.addEventListener('dragstart', function(e) {
-                draggedItem = this;
-                setTimeout(() => this.classList.add('dragging'), 0);
-            });
+                </div>
 
-            element.addEventListener('dragend', function(e) {
-                this.classList.remove('dragging');
-                draggedItem = null;
-                document.querySelectorAll('.card-container').forEach(el => el.classList.remove('drag-over'));
-            });
+                <div class="move-controls">
 
-            element.addEventListener('dragover', function(e) {
-                e.preventDefault(); 
-            });
+                    <button class="move-btn"
+                            onclick="moveCardLeft(this)">
+                        ←
+                    </button>
 
-            element.addEventListener('dragenter', function(e) {
-                e.preventDefault();
-                if (this !== draggedItem) {
-                    this.classList.add('drag-over');
+                    <button class="move-btn"
+                            onclick="moveCardRight(this)">
+                        →
+                    </button>
+
+                </div>
+            `;
+
+            // 翻牌
+            const card =
+                cardContainer.querySelector('.card');
+
+            card.addEventListener('click', () => {
+
+                if (!card.classList.contains('flipped')) {
+
+                    card.classList.add('flipped');
                 }
             });
 
-            element.addEventListener('dragleave', function(e) {
-                this.classList.remove('drag-over');
-            });
+            storyboard.appendChild(cardContainer);
+        });
+    }
 
-            element.addEventListener('drop', function(e) {
-                this.classList.remove('drag-over');
-                if (this !== draggedItem) {
-                    const allItems = [...storyboard.querySelectorAll('.card-container')];
-                    const draggedIndex = allItems.indexOf(draggedItem);
-                    const droppedIndex = allItems.indexOf(this);
+    // 左移
+    function moveCardLeft(button) {
 
-                    if (draggedIndex < droppedIndex) {
-                        this.parentNode.insertBefore(draggedItem, this.nextSibling);
-                    } else {
-                        this.parentNode.insertBefore(draggedItem, this);
-                    }
-                }
-            });
+        const cardContainer =
+            button.closest('.card-container');
+
+        const prev =
+            cardContainer.previousElementSibling;
+
+        if (prev) {
+
+            storyboard.insertBefore(
+                cardContainer,
+                prev
+            );
         }
+    }
 
-        btnDraw.addEventListener('click', initStoryboard);
-        
-        btnGallery.addEventListener('click', () => {
-            mainView.style.display = 'none';
-            galleryView.style.display = 'flex';
+    // 右移
+    function moveCardRight(button) {
+
+        const cardContainer =
+            button.closest('.card-container');
+
+        const next =
+            cardContainer.nextElementSibling;
+
+        if (next) {
+
+            storyboard.insertBefore(
+                next,
+                cardContainer
+            );
+        }
+    }
+
+    // 建立圖庫
+    function initGallery() {
+
+        galleryGrid.innerHTML = '';
+
+        imageList.forEach((src, index) => {
+
+            const num =
+                String(index + 1).padStart(2, '0');
+
+            const item =
+                document.createElement('div');
+
+            item.className = 'gallery-item';
+
+            item.innerHTML = `
+
+                <img src="${src}" alt="gallery">
+
+                <div class="image-label">
+
+                    images_${num}
+
+                </div>
+            `;
+
+            galleryGrid.appendChild(item);
         });
+    }
 
-        btnBack.addEventListener('click', () => {
-            galleryView.style.display = 'none';
-            mainView.style.display = 'flex';
-        });
+    // 顯示圖庫
+    btnGallery.addEventListener('click', () => {
 
-        window.onload = () => {
-            initGallery();
-            initStoryboard();
-        };
-    </script>
+        mainView.style.display = 'none';
+
+        galleryView.style.display = 'flex';
+    });
+
+    // 返回首頁
+    btnBack.addEventListener('click', () => {
+
+        galleryView.style.display = 'none';
+
+        mainView.style.display = 'flex';
+    });
+
+    // 重新抽卡
+    btnDraw.addEventListener('click', () => {
+
+        initStoryboard();
+    });
+
+    // 預設載入
+    window.onload = () => {
+
+        initStoryboard();
+
+        initGallery();
+    };
+
+</script>
+```
+
 </body>
+
 </html>
