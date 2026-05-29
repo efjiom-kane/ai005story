@@ -1,274 +1,352 @@
-```html
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>圖卡說故事創意發揮</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<title>五格故事圖卡</title>
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", sans-serif;
+      background: #f4f5f7;
+      color: #222;
+    }
 
-<style>
+    header {
+      padding: 24px;
+      background: #1f2937;
+      color: white;
+      text-align: center;
+    }
 
-body{
-    margin:0;
-    padding:0;
-    background:#111;
-    color:white;
-    font-family:Arial, sans-serif;
-    overflow-x:hidden;
-}
+    header h1 {
+      margin: 0;
+      font-size: 32px;
+    }
 
-h1{
-    text-align:center;
-    padding:30px 0 10px;
-    font-size:32px;
-}
+    header p {
+      margin-top: 10px;
+      opacity: 0.85;
+    }
 
-.description{
-    text-align:center;
-    color:#bbb;
-    margin-bottom:20px;
-}
+    .container {
+      max-width: 1400px;
+      margin: auto;
+      padding: 24px;
+    }
 
-.card-area{
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:20px;
-    flex-wrap:wrap;
-    padding:30px;
-    box-sizing:border-box;
-}
+    .button-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
 
-.card{
-    width:240px;
-    aspect-ratio:16/9;
-    perspective:1000px;
-    cursor:pointer;
-}
+    button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.2s;
+    }
 
-.card-inner{
-    width:100%;
-    height:100%;
-    position:relative;
-    transform-style:preserve-3d;
-    transition:0.8s;
-}
+    button:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
 
-.card.flipped .card-inner{
-    transform:rotateY(180deg);
-}
+    .cards-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
 
-.card-front,
-.card-back{
-    position:absolute;
-    width:100%;
-    height:100%;
-    border-radius:16px;
-    overflow:hidden;
-    backface-visibility:hidden;
-    box-shadow:0 10px 25px rgba(0,0,0,0.5);
-}
+    .card-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-.card-front{
-    background:#222;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:42px;
-    font-weight:bold;
-}
+    .card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #d1d5db;
+      cursor: pointer;
+      perspective: 1000px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
 
-.card-back{
-    transform:rotateY(180deg);
-    background:black;
-}
+    .card-inner {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
 
-.card-back img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
 
-.button-area{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    flex-wrap:wrap;
-    margin-bottom:30px;
-}
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-button{
-    padding:12px 30px;
-    border:none;
-    border-radius:10px;
-    background:white;
-    color:black;
-    font-size:18px;
-    cursor:pointer;
-    transition:0.3s;
-}
+    .card-front {
+      background: linear-gradient(135deg, #374151, #111827);
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 4px;
+    }
 
-button:hover{
-    transform:scale(1.05);
-}
+    .card-back {
+      transform: rotateY(180deg);
+      background: white;
+    }
 
-.gallery{
-    display:none;
-    width:100%;
-    padding:20px;
-    box-sizing:border-box;
-}
+    .card-back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-.gallery.active{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-}
+    .card-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
 
-.gallery img{
-    width:100%;
-    border-radius:12px;
-    aspect-ratio:16/9;
-    object-fit:cover;
-    box-shadow:0 5px 15px rgba(0,0,0,0.5);
-}
+    .card-controls button {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      background: #4b5563;
+    }
 
-footer{
-    text-align:center;
-    padding:40px 20px;
-    color:#777;
-}
+    .story-area {
+      margin-top: 30px;
+    }
 
-</style>
+    .story-area h2 {
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 240px;
+      border-radius: 16px;
+      border: 1px solid #d1d5db;
+      padding: 18px;
+      font-size: 16px;
+      resize: vertical;
+      line-height: 1.8;
+    }
+
+    .gallery-page {
+      display: none;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .gallery-item {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gallery-item p {
+      text-align: center;
+      padding: 10px;
+      margin: 0;
+      font-size: 14px;
+      background: #f9fafb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 24px;
+      }
+
+      .cards-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <header>
+    <h1>圖卡說故事創意發揮</h1>
+    <p>隨機抽取五張圖卡，自由排列順序，創作屬於你的故事。</p>
+  </header>
 
-<h1>五格故事圖卡</h1>
+  <div class="container">
+    <div id="homePage">
+      <div class="button-group">
+        <button onclick="drawCards()">重新抽五張圖卡</button>
+        <button onclick="showGallery()">所有圖庫</button>
+      </div>
 
-<div class="description">
-點擊卡片翻面抽取故事圖卡
-</div>
+      <div class="cards-wrapper" id="cardsWrapper"></div>
 
-<div class="card-area" id="cardArea"></div>
+      <div class="story-area">
+        <h2>故事創作區</h2>
+        <textarea placeholder="依照五張圖卡，在這裡輸入你的故事..."></textarea>
+      </div>
+    </div>
 
-<div class="button-area">
-    <button id="randomBtn">重新抽卡</button>
-    <button id="toggleGallery">查看全部圖庫</button>
-</div>
+    <div id="galleryPage" class="gallery-page">
+      <div class="button-group">
+        <button onclick="backHome()">返回首頁</button>
+      </div>
 
-<div class="gallery" id="gallery"></div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </div>
 
-<footer>
-Story Card Generator
-</footer>
+  <script>
+    const imageFolder = 'images';
 
-<script>
+    // 可自由增加數量
+    const totalImages = 36;
 
-const totalImages = 36;
-const drawCount = 5;
+    const imageList = [];
 
-const cardArea = document.getElementById('cardArea');
-const gallery = document.getElementById('gallery');
-
-function pad(num){
-    return num.toString().padStart(2,'0');
-}
-
-function createGallery(){
-
-    for(let i=1;i<=totalImages;i++){
-
-        const img = document.createElement('img');
-
-        img.src = `images/${pad(i)}.jpg`;
-
-        gallery.appendChild(img);
-    }
-}
-
-function getRandomImages(){
-
-    const numbers = [];
-
-    while(numbers.length < drawCount){
-
-        const random = Math.floor(Math.random() * totalImages) + 1;
-
-        if(!numbers.includes(random)){
-            numbers.push(random);
-        }
+    for (let i = 1; i <= totalImages; i++) {
+      const num = String(i).padStart(2, '0');
+      imageList.push(`${imageFolder}/${num}.jpg`);
     }
 
-    return numbers;
-}
+    let currentCards = [];
 
-function createCards(){
+    function shuffle(array) {
+      return [...array].sort(() => Math.random() - 0.5);
+    }
 
-    cardArea.innerHTML = '';
+    function drawCards() {
+      const wrapper = document.getElementById('cardsWrapper');
+      wrapper.innerHTML = '';
 
-    const selected = getRandomImages();
+      currentCards = shuffle(imageList).slice(0, 5);
 
-    selected.forEach(num=>{
+      renderCards();
+    }
 
-        const card = document.createElement('div');
-        card.className = 'card';
+    function renderCards() {
+      const wrapper = document.getElementById('cardsWrapper');
+      wrapper.innerHTML = '';
 
-        card.innerHTML = `
+      currentCards.forEach((imgSrc, index) => {
+        const block = document.createElement('div');
+        block.className = 'card-block';
+
+        block.innerHTML = `
+          <div class="card" onclick="flipCard(this)">
             <div class="card-inner">
-
-                <div class="card-front">
-                    ?
-                </div>
-
-                <div class="card-back">
-                    <img src="images/${pad(num)}.jpg">
-                </div>
-
+              <div class="card-front">
+                點擊翻牌
+              </div>
+              <div class="card-back">
+                <img src="${imgSrc}" alt="圖卡 ${index + 1}" loading="lazy">
+              </div>
             </div>
+          </div>
+
+          <div class="card-controls">
+            <button onclick="moveLeft(${index})">← 前移</button>
+            <button onclick="moveRight(${index})">後移 →</button>
+          </div>
         `;
 
-        card.addEventListener('click',()=>{
-
-            card.classList.toggle('flipped');
-
-        });
-
-        cardArea.appendChild(card);
-
-    });
-
-}
-
-createCards();
-createGallery();
-
-document.getElementById('randomBtn').addEventListener('click',()=>{
-
-    createCards();
-
-});
-
-document.getElementById('toggleGallery').addEventListener('click',()=>{
-
-    gallery.classList.toggle('active');
-
-    if(gallery.classList.contains('active')){
-
-        document.getElementById('toggleGallery').innerText = '隱藏圖庫';
-
-    }else{
-
-        document.getElementById('toggleGallery').innerText = '查看全部圖庫';
-
+        wrapper.appendChild(block);
+      });
     }
 
-});
+    function flipCard(cardElement) {
+      cardElement.classList.toggle('flipped');
+    }
 
-</script>
+    function moveLeft(index) {
+      if (index === 0) return;
 
+      [currentCards[index - 1], currentCards[index]] = [currentCards[index], currentCards[index - 1]];
+
+      renderCards();
+    }
+
+    function moveRight(index) {
+      if (index === currentCards.length - 1) return;
+
+      [currentCards[index + 1], currentCards[index]] = [currentCards[index], currentCards[index + 1]];
+
+      renderCards();
+    }
+
+    function showGallery() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('galleryPage').style.display = 'block';
+
+      renderGallery();
+    }
+
+    function backHome() {
+      document.getElementById('homePage').style.display = 'block';
+      document.getElementById('galleryPage').style.display = 'none';
+    }
+
+    function renderGallery() {
+      const gallery = document.getElementById('galleryGrid');
+      gallery.innerHTML = '';
+
+      imageList.forEach((imgSrc, index) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+
+        item.innerHTML = `
+          <img src="${imgSrc}" alt="圖卡 ${index + 1}" loading="lazy">
+          <p>圖卡 ${String(index + 1).padStart(2, '0')}</p>
+        `;
+
+        gallery.appendChild(item);
+      });
+    }
+
+    drawCards();
+  </script>
 </body>
 </html>
-```
