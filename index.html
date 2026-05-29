@@ -18,79 +18,49 @@
   <div id="homePage">
 
 ```
+<!-- 標題 -->
 <header class="header">
 
   <h1>圖卡說故事創意發揮</h1>
 
   <p>
-    隨機抽取五張圖卡，自由排列順序後創作故事。
+    抽出五張圖卡，自由排列順序後創作故事。
   </p>
 
 </header>
 
-<!-- 按鈕區 -->
+<!-- 功能按鈕 -->
 <div class="button-group">
 
+  <!-- 抽卡 -->
   <button onclick="drawCards()">
     抽五張圖卡
   </button>
 
+  <!-- 全部圖庫 -->
   <button onclick="showGallery()">
     所有圖庫
   </button>
 
 </div>
 
-<!-- 五張圖卡 -->
+<!-- 五張圖卡區 -->
 <div id="cardsWrapper" class="cards-wrapper">
 
-  <!-- 卡片1 -->
-  <div class="card-block">
-
-    <div class="card">
-
-      <div class="card-inner">
-
-        <!-- 背面 -->
-        <div class="card-front">
-
-          點擊翻牌
-
-        </div>
-
-        <!-- 正面 -->
-        <div class="card-back">
-
-          <img src="" alt="圖卡">
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="card-controls">
-
-      <button>← 前移</button>
-
-      <button>後移 →</button>
-
-    </div>
-
-  </div>
+  <!-- JS 會自動生成五張圖卡 -->
 
 </div>
 
-<!-- 文字故事區 -->
-<div class="story-section">
+<!-- 故事輸入 -->
+<section class="story-section">
 
   <h2>故事創作區</h2>
 
   <textarea
-    placeholder="依照圖卡順序輸入你的故事..."
+    placeholder="依照圖卡順序輸入故事..."
   ></textarea>
 
-</div>
+</section>
 ```
 
   </div>
@@ -114,13 +84,13 @@
 
 </div>
 
-<!-- 全部圖片 -->
+<!-- 全圖庫 -->
 <div id="galleryGrid" class="gallery-grid"></div>
 ```
 
   </div>
 
-  <!-- 載入 JS -->
+  <!-- JS -->
 
   <script src="script.js"></script>
 
