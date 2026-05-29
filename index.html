@@ -1,285 +1,361 @@
 <!DOCTYPE html>
-
-<html lang="zh-Hant">
-
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI分鏡創意故事</title>
+    <style>
+        :root {
+            --primary-color: #363f60;
+            --secondary-color: #868887;
+            --bg-color: #f4f6f8;
+        }
 
-  <title>圖卡說故事創意發揮</title>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-  <link rel="stylesheet" href="style.css">
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2a314b;
+        }
+
+        button.secondary {
+            background-color: var(--secondary-color);
+        }
+
+        button.secondary:hover {
+            background-color: #6d6e6e;
+        }
+
+        /* 主視圖：分鏡區域 */
+        #main-view {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .storyboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        /* 卡片設計 (16:9 比例) */
+        .card-container {
+            width: 220px;
+            aspect-ratio: 16 / 9;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-container.dragging {
+            opacity: 0.5;
+        }
+
+        .card-container.drag-over {
+            border: 2px dashed var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .card-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .card-front {
+            background-color: white;
+            transform: rotateY(180deg);
+        }
+
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 800px;
+            height: 150px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* 圖庫視圖 */
+        #gallery-view {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            aspect-ratio: 16 / 9;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-label {
+            text-align: center;
+            font-size: 12px;
+            padding: 5px;
+            background: #eee;
+        }
+    </style>
 </head>
-
 <body>
 
-  <!-- 首頁 -->
-
-  <div id="homePage">
-
-```
-<!-- 標題 -->
-<header class="header">
-
-  <h1>圖卡說故事創意發揮</h1>
-
-  <p>
-    抽出五張圖卡，自由排列順序後創作故事。
-  </p>
-
-</header>
-
-<!-- 功能按鈕 -->
-<div class="button-group">
-
-  <!-- 抽卡 -->
-  <button onclick="drawCards()">
-    抽五張圖卡
-  </button>
-
-  <!-- 所有圖庫 -->
-  <button onclick="showGallery()">
-    所有圖庫
-  </button>
-
-</div>
-
-<!-- 五張圖卡 -->
-<div id="cardsWrapper" class="cards-wrapper">
-
-  <!-- 卡片1 -->
-  <div class="card-block">
-
-    <div class="card">
-
-      <div class="card-inner">
-
-        <!-- 背面 -->
-        <div class="card-front">
-
-          點擊翻牌
-
+    <div id="main-view">
+        <h1>AI分鏡創意故事</h1>
+        
+        <div class="controls">
+            <button id="btn-draw">開始抽籤 (重置)</button>
+            <button id="btn-gallery" class="secondary">全部圖庫</button>
         </div>
 
-        <!-- 正面 -->
-        <div class="card-back">
-
-          <img src="" alt="圖卡">
-
+        <div class="storyboard" id="storyboard">
         </div>
 
-      </div>
-
+        <textarea placeholder="請根據上方的圖片順序，在這裡填寫您的創意故事..."></textarea>
     </div>
 
-    <div class="card-controls">
-
-      <button disabled>
-        ← 前移
-      </button>
-
-      <button disabled>
-        後移 →
-      </button>
-
-    </div>
-
-  </div>
-
-  <!-- 卡片2 -->
-  <div class="card-block">
-
-    <div class="card">
-
-      <div class="card-inner">
-
-        <div class="card-front">
-
-          點擊翻牌
-
+    <div id="gallery-view">
+        <h1>全部圖庫</h1>
+        <div class="controls">
+            <button id="btn-back">返回首頁</button>
         </div>
-
-        <div class="card-back">
-
-          <img src="" alt="圖卡">
-
+        <div class="gallery-grid" id="gallery-grid">
         </div>
-
-      </div>
-
     </div>
 
-    <div class="card-controls">
-
-      <button disabled>
-        ← 前移
-      </button>
-
-      <button disabled>
-        後移 →
-      </button>
-
-    </div>
-
-  </div>
-
-  <!-- 卡片3 -->
-  <div class="card-block">
-
-    <div class="card">
-
-      <div class="card-inner">
-
-        <div class="card-front">
-
-          點擊翻牌
-
-        </div>
-
-        <div class="card-back">
-
-          <img src="" alt="圖卡">
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="card-controls">
-
-      <button disabled>
-        ← 前移
-      </button>
-
-      <button disabled>
-        後移 →
-      </button>
-
-    </div>
-
-  </div>
-
-  <!-- 卡片4 -->
-  <div class="card-block">
-
-    <div class="card">
-
-      <div class="card-inner">
-
-        <div class="card-front">
-
-          點擊翻牌
-
-        </div>
-
-        <div class="card-back">
-
-          <img src="" alt="圖卡">
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="card-controls">
-
-      <button disabled>
-        ← 前移
-      </button>
-
-      <button disabled>
-        後移 →
-      </button>
-
-    </div>
-
-  </div>
-
-  <!-- 卡片5 -->
-  <div class="card-block">
-
-    <div class="card">
-
-      <div class="card-inner">
-
-        <div class="card-front">
-
-          點擊翻牌
-
-        </div>
-
-        <div class="card-back">
-
-          <img src="" alt="圖卡">
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="card-controls">
-
-      <button disabled>
-        ← 前移
-      </button>
-
-      <button disabled>
-        後移 →
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-<!-- 故事輸入 -->
-<section class="story-section">
-
-  <h2>故事創作區</h2>
-
-  <textarea
-    placeholder="依照圖卡順序輸入你的故事..."
-  ></textarea>
-
-</section>
-```
-
-  </div>
-
-  <!-- 圖庫頁 -->
-
-  <div id="galleryPage" style="display:none;">
-
-```
-<header class="header">
-
-  <h1>所有圖庫</h1>
-
-</header>
-
-<!-- 返回按鈕 -->
-<div class="button-group">
-
-  <button onclick="backHome()">
-    返回首頁
-  </button>
-
-</div>
-
-<!-- 全部圖庫 -->
-<div id="galleryGrid" class="gallery-grid"></div>
-```
-
-  </div>
-
-  <!-- 載入 JS -->
-
-  <script src="script.js"></script>
-
+    <script>
+        // 設定區
+        const TOTAL_IMAGES = 36;
+        const CARD_COUNT = 5;
+        const IMAGE_EXT = '.jpg'; 
+        // 已經將資料夾名稱改為 ai005story
+        const IMAGE_FOLDER = 'ai005story/';
+
+        // DOM 元素
+        const mainView = document.getElementById('main-view');
+        const galleryView = document.getElementById('gallery-view');
+        const storyboard = document.getElementById('storyboard');
+        const galleryGrid = document.getElementById('gallery-grid');
+        
+        const btnDraw = document.getElementById('btn-draw');
+        const btnGallery = document.getElementById('btn-gallery');
+        const btnBack = document.getElementById('btn-back');
+
+        // 生成圖片路徑陣列
+        const imageList = [];
+        for (let i = 1; i <= TOTAL_IMAGES; i++) {
+            const numStr = i.toString().padStart(2, '0');
+            imageList.push(`${IMAGE_FOLDER}images_${numStr}${IMAGE_EXT}`);
+        }
+
+        // 初始化圖庫畫面
+        function initGallery() {
+            galleryGrid.innerHTML = '';
+            imageList.forEach((src, index) => {
+                const numStr = (index + 1).toString().padStart(2, '0');
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+                div.innerHTML = `
+                    <img src="${src}" alt="Image ${numStr}" loading="lazy">
+                    <div class="image-label">images_${numStr}</div>
+                `;
+                galleryGrid.appendChild(div);
+            });
+        }
+
+        // 隨機抽取圖片
+        function drawRandomImages() {
+            const shuffled = [...imageList].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, CARD_COUNT);
+        }
+
+        // 建立分鏡卡片
+        function initStoryboard() {
+            storyboard.innerHTML = '';
+            const selectedImages = drawRandomImages();
+
+            selectedImages.forEach((src, index) => {
+                const cardContainer = document.createElement('div');
+                cardContainer.className = 'card-container';
+                cardContainer.draggable = true; 
+                
+                cardContainer.innerHTML = `
+                    <div class="card">
+                        <div class="card-face card-back">點擊翻牌</div>
+                        <div class="card-face card-front">
+                            <img src="${src}" alt="Story Image">
+                        </div>
+                    </div>
+                `;
+
+                // 點擊翻轉邏輯
+                cardContainer.addEventListener('click', function() {
+                    const card = this.querySelector('.card');
+                    if (!card.classList.contains('flipped')) {
+                        card.classList.add('flipped');
+                    }
+                });
+
+                addDragAndDropHandlers(cardContainer);
+                storyboard.appendChild(cardContainer);
+            });
+        }
+
+        // 拖曳重排邏輯
+        let draggedItem = null;
+
+        function addDragAndDropHandlers(element) {
+            element.addEventListener('dragstart', function(e) {
+                draggedItem = this;
+                setTimeout(() => this.classList.add('dragging'), 0);
+            });
+
+            element.addEventListener('dragend', function(e) {
+                this.classList.remove('dragging');
+                draggedItem = null;
+                document.querySelectorAll('.card-container').forEach(el => el.classList.remove('drag-over'));
+            });
+
+            element.addEventListener('dragover', function(e) {
+                e.preventDefault(); 
+            });
+
+            element.addEventListener('dragenter', function(e) {
+                e.preventDefault();
+                if (this !== draggedItem) {
+                    this.classList.add('drag-over');
+                }
+            });
+
+            element.addEventListener('dragleave', function(e) {
+                this.classList.remove('drag-over');
+            });
+
+            element.addEventListener('drop', function(e) {
+                this.classList.remove('drag-over');
+                if (this !== draggedItem) {
+                    const allItems = [...storyboard.querySelectorAll('.card-container')];
+                    const draggedIndex = allItems.indexOf(draggedItem);
+                    const droppedIndex = allItems.indexOf(this);
+
+                    if (draggedIndex < droppedIndex) {
+                        this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                    } else {
+                        this.parentNode.insertBefore(draggedItem, this);
+                    }
+                }
+            });
+        }
+
+        btnDraw.addEventListener('click', initStoryboard);
+        
+        btnGallery.addEventListener('click', () => {
+            mainView.style.display = 'none';
+            galleryView.style.display = 'flex';
+        });
+
+        btnBack.addEventListener('click', () => {
+            galleryView.style.display = 'none';
+            mainView.style.display = 'flex';
+        });
+
+        window.onload = () => {
+            initGallery();
+            initStoryboard();
+        };
+    </script>
 </body>
-
 </html>
