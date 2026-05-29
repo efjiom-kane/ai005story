@@ -18,19 +18,21 @@
   <div id="homePage">
 
 ```
-<header>
+<header class="header">
+
   <h1>圖卡說故事創意發揮</h1>
 
   <p>
-    隨機抽取五張圖卡，排列順序後創作故事。
+    隨機抽取五張圖卡，自由排列順序後創作故事。
   </p>
+
 </header>
 
-<!-- 功能按鈕 -->
-<div class="top-buttons">
+<!-- 按鈕區 -->
+<div class="button-group">
 
   <button onclick="drawCards()">
-    重新抽卡
+    抽五張圖卡
   </button>
 
   <button onclick="showGallery()">
@@ -40,9 +42,46 @@
 </div>
 
 <!-- 五張圖卡 -->
-<div id="cardsWrapper" class="cards-wrapper"></div>
+<div id="cardsWrapper" class="cards-wrapper">
 
-<!-- 故事輸入區 -->
+  <!-- 卡片1 -->
+  <div class="card-block">
+
+    <div class="card">
+
+      <div class="card-inner">
+
+        <!-- 背面 -->
+        <div class="card-front">
+
+          點擊翻牌
+
+        </div>
+
+        <!-- 正面 -->
+        <div class="card-back">
+
+          <img src="" alt="圖卡">
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card-controls">
+
+      <button>← 前移</button>
+
+      <button>後移 →</button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 文字故事區 -->
 <div class="story-section">
 
   <h2>故事創作區</h2>
@@ -61,11 +100,13 @@
   <div id="galleryPage" style="display:none;">
 
 ```
-<header>
+<header class="header">
+
   <h1>所有圖庫</h1>
+
 </header>
 
-<div class="top-buttons">
+<div class="button-group">
 
   <button onclick="backHome()">
     返回首頁
@@ -79,7 +120,7 @@
 
   </div>
 
-  <!-- 載入 script -->
+  <!-- 載入 JS -->
 
   <script src="script.js"></script>
 
